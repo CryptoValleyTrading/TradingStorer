@@ -14,5 +14,7 @@ This application is used to store up to date Trading Information inside a [Times
 5. Add Your Trackers within Adminer. A Tracker consists of a Trading Pair and an Exchange.
 6. Restart the app container: `docker-compose restart app`.
 
-
+# Database
+The Database uses the following schema: 
+![image](https://user-images.githubusercontent.com/25279790/196005994-177504dc-4f1d-4c65-b688-329d5e7d81bf.png)
 
