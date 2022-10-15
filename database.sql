@@ -33,7 +33,7 @@ CREATE TABLE "public"."trades" (
     "price" numeric(16,8) NOT NULL,
     "amount" numeric(16,8) NOT NULL,
     "cost" numeric(16,8) NOT NULL,
-    "identification" text NOT NULL,
+    "identification" text NOT NULL
 ) WITH (oids = false);
 
 
@@ -56,4 +56,4 @@ ALTER TABLE ONLY "public"."trades" ADD CONSTRAINT "trades_tracker_id_fkey" FOREI
 -- 2022-10-15 15:27:19.09495+00
 
 SELECT create_hypertable('trades','timestamp');
-CREATE INDEX ix_tracking_id_timestamp ON trades(tracking_id, time DESC);
+CREATE INDEX ix_tracking_id_timestamp ON trades(tracker_id, timestamp DESC);
