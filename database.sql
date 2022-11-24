@@ -57,3 +57,26 @@ ALTER TABLE ONLY "public"."trades" ADD CONSTRAINT "trades_tracker_id_fkey" FOREI
 
 SELECT create_hypertable('trades','timestamp');
 CREATE INDEX ix_tracking_id_timestamp ON trades(tracker_id, timestamp DESC);
+
+-- 2022-11-24 14:12:12.09495+00
+
+CREATE TABLE "public"."trades_grouped_by_second" (
+    "timestamp" timestamptz NOT NULL,
+    "tracker_id" integer NOT NULL,
+    "price" numeric(16,8) NOT NULL,
+    "amount" numeric(16,8) NOT NULL,
+    "cost" numeric(16,8) NOT NULL
+) WITH (oids = false);
+
+SELECT create_hypertable('trades_grouped_by_second','timestamp');
+CREATE INDEX ix_tracking_id_timestamp_grouped_by_second ON trades_grouped_by_second(tracker_id, timestamp DESC);
+
+INSERT INTO trades_grouped_by_second
+SELECT time_bucket('1 second', timestamp) AS one_sec,
+       tracker_id,
+       avg(price) AS price,
+       sum(amount) AS volume,
+       sum(cost) as cost
+FROM trades
+GROUP BY tracker_id, one_sec
+ORDER BY one_sec
