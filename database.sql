@@ -63,8 +63,11 @@ CREATE INDEX ix_tracking_id_timestamp ON trades(tracker_id, timestamp DESC);
 CREATE TABLE "public"."trades_grouped_by_second" (
     "timestamp" timestamptz NOT NULL,
     "tracker_id" integer NOT NULL,
-    "price" numeric(16,8) NOT NULL,
-    "amount" numeric(16,8) NOT NULL,
+    "num_trades" integer NOT NULL,
+    "min_price" numeric(16, 8) NOT NULL,
+    "max_price" numeric(16, 8) NOT NULL,
+    "weighted_avg_price" numeric(16, 8) NOT NULL,
+    "volume" numeric(16, 8) NOT NULL,
     "cost" numeric(16,8) NOT NULL
 ) WITH (oids = false);
 
@@ -74,7 +77,10 @@ CREATE INDEX ix_tracking_id_timestamp_grouped_by_second ON trades_grouped_by_sec
 INSERT INTO trades_grouped_by_second
 SELECT time_bucket('1 second', timestamp) AS one_sec,
        tracker_id,
-       avg(price) AS price,
+       count(*) AS num_trades,
+       min(price) AS min_price,
+       max(price) AS max_price,
+       sum(price * amount) / sum(amount) AS weighted_avg_price,
        sum(amount) AS volume,
        sum(cost) as cost
 FROM trades
