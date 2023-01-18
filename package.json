@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ccxt": "^2.0.15",
+    "binance": "^2.2.10",
+    "ccxt": "^2.6.36",
     "dotenv": "^16.0.3",
     "knex": "^2.3.0",
     "knex-pg": "^0.0.10"

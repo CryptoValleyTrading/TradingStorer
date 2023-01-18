@@ -11,6 +11,16 @@ CREATE TABLE "public"."exchanges" (
     CONSTRAINT "exchanges_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+DROP TABLE IF EXISTS "orderbooks";
+CREATE TABLE "public"."orderbooks" (
+    "timestamp" timestamptz NOT NULL,
+    "tracker_id" integer NOT NULL,
+    "asks" jsonb NOT NULL,
+    "bids" jsonb NOT NULL
+) WITH (oids = false);
+
+CREATE INDEX "orderbooks_timestamp_idx" ON "public"."orderbooks" USING btree ("timestamp" DESC);
+
 
 DROP TABLE IF EXISTS "trackers";
 DROP SEQUENCE IF EXISTS trackers_id_seq;
@@ -21,6 +31,7 @@ CREATE TABLE "public"."trackers" (
     "trading_pair_id" integer NOT NULL,
     "exchange_id" integer NOT NULL,
     "is_active" boolean DEFAULT true NOT NULL,
+    "track_orderbook" boolean NOT NULL,
     CONSTRAINT "trackers_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 

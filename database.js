@@ -34,6 +34,22 @@ async function getAllActiveTrackers() {
   return result;
 }
 
+async function getAllActiveTrackersWithOrderbook() {
+  const result = await knex
+    .select("trackers.id", "exchanges.ccxt_identifier", "trading_pairs.symbol")
+    .from("trackers")
+    .where("trackers.is_active", true)
+    .where("trackers.track_orderbook", true)
+    .join("exchanges", function () {
+      this.on("exchanges.id", "=", "trackers.exchange_id");
+    })
+    .join("trading_pairs", function () {
+      this.on("trackers.trading_pair_id", "=", "trading_pairs.id");
+    });
+
+  return result;
+}
+
 async function saveTrades(trades) {
   if (!trades.length) {
     return;
@@ -41,8 +57,21 @@ async function saveTrades(trades) {
   await knex("trades").insert(trades);
 }
 
+async function saveOrderBook(timestamp, tracker_id, asks, bids) {
+  const orderbook = {
+    timestamp,
+    tracker_id,
+    asks: JSON.stringify(asks),
+    bids: JSON.stringify(bids),
+  };
+
+  await knex("orderbooks").insert(orderbook);
+}
+
 module.exports = {
   getLatestTradeTimestamp,
   getAllActiveTrackers,
+  getAllActiveTrackersWithOrderbook,
   saveTrades,
+  saveOrderBook,
 };
