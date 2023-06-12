@@ -64,7 +64,7 @@ async function startOrderBookScraper(){
         tracker_ids[wsKey] = id;
         console.log(wsKey, id)
 
-        wsClient.subscribeSpotPartialBookDepth(key, 5, 100);
+        wsClient.subscribeSpotPartialBookDepth(key, 20, 100);
     }
 }
 
